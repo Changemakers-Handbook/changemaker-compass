@@ -1,0 +1,36 @@
+{
+  "name": "admin",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3001",
+    "build": "next build",
+    "start": "next start --port 3001",
+    "generate:types": "payload generate:types",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@mantine/core": "^7.17.0",
+    "@mantine/hooks": "^7.17.0",
+    "@payloadcms/db-postgres": "^3.0.0",
+    "@payloadcms/next": "^3.0.0",
+    "@payloadcms/richtext-lexical": "^3.0.0",
+    "@supabase/supabase-js": "^2.49.0",
+    "@tabler/icons-react": "^3.34.0",
+    "graphql": "^16.10.0",
+    "next": "^15.3.0",
+    "payload": "^3.0.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "sharp": "0.32.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "^15.3.0",
+    "sass": "^1.101.0",
+    "typescript": "^5"
+  }
+}

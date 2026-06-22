@@ -1,0 +1,13 @@
+packages:
+  - 'client'
+  - 'admin'
+
+allowBuilds:
+  '@parcel/watcher': false
+  esbuild: true
+  sharp: false
+  unrs-resolver: false
+
+ignoredBuiltDependencies:
+  - sharp
+  - unrs-resolver

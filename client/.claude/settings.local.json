@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la /Users/elena/changemaker-compas-client/client && ls -la /Users/elena/changemaker-compas-client/)",
+      "Read(//Users/elena/changemaker-compas-client/**)"
+    ]
+  }
+}

@@ -24,8 +24,19 @@ export const Responses: CollectionConfig = {
     {
       name: 'email',
       type: 'email',
-      required: true,
       label: 'Respondent Email',
+    },
+    {
+      name: 'receiveResults',
+      type: 'checkbox',
+      defaultValue: false,
+      label: 'Opted in to receive results by email',
+    },
+    {
+      name: 'marketingOptIn',
+      type: 'checkbox',
+      defaultValue: false,
+      label: 'Opted in to marketing emails',
     },
     {
       name: 'answers',

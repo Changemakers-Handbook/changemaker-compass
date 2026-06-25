@@ -53,6 +53,7 @@ export const Surveys: CollectionConfig = {
           label: 'Question Type',
           options: [
             { label: 'Multiple Choice', value: 'multiple_choice' },
+            { label: 'True / False', value: 'true_false' },
             { label: 'Free Text Answer', value: 'text' },
             { label: 'Number Scale', value: 'scale' },
           ],
@@ -82,6 +83,26 @@ export const Surveys: CollectionConfig = {
               },
             },
           ],
+        },
+        {
+          name: 'trueValue',
+          type: 'number',
+          defaultValue: 1,
+          label: '"True" Score Value',
+          admin: {
+            description: 'Points added when the user answers True',
+            condition: (_data, siblingData) => siblingData?.type === 'true_false',
+          },
+        },
+        {
+          name: 'falseValue',
+          type: 'number',
+          defaultValue: 0,
+          label: '"False" Score Value',
+          admin: {
+            description: 'Points added when the user answers False',
+            condition: (_data, siblingData) => siblingData?.type === 'true_false',
+          },
         },
         {
           name: 'scaleMin',
@@ -142,6 +163,17 @@ export const Surveys: CollectionConfig = {
           label: 'Maximum Score (inclusive)',
         },
       ],
+    },
+    {
+      name: 'suggestedSurvey',
+      type: 'relationship',
+      relationTo: 'surveys',
+      required: false,
+      label: 'Suggested Follow-up Survey',
+      admin: {
+        description: 'Shown as a "you might also like" card at the bottom of the results screen',
+        position: 'sidebar',
+      },
     },
     {
       name: 'published',

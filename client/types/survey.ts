@@ -1,4 +1,4 @@
-export type QuestionType = 'multiple_choice' | 'text' | 'scale';
+export type QuestionType = 'multiple_choice' | 'true_false' | 'text' | 'scale';
 
 export interface QuestionOption {
   id: string;
@@ -11,6 +11,8 @@ export interface Question {
   text: string;
   type: QuestionType;
   options?: QuestionOption[];
+  trueValue?: number;
+  falseValue?: number;
   scaleMin?: number;
   scaleMax?: number;
 }
@@ -22,6 +24,13 @@ export interface ResultRange {
   maxScore: number;
 }
 
+export interface SuggestedSurvey {
+  id: string;
+  title: string;
+  slug: string;
+  description?: string;
+}
+
 export interface Survey {
   id: string;
   title: string;
@@ -29,6 +38,7 @@ export interface Survey {
   slug: string;
   questions: Question[];
   resultRanges: ResultRange[];
+  suggestedSurvey?: SuggestedSurvey;
   published: boolean;
   createdAt: string;
 }

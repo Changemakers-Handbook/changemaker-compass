@@ -1,9 +1,12 @@
 export type QuestionType = 'multiple_choice' | 'true_false' | 'text' | 'scale';
 
+export type ScoringMode = 'numeric' | 'profile';
+
 export interface QuestionOption {
   id: string;
   text: string;
   value: number;
+  profile?: string;
 }
 
 export interface Question {
@@ -24,6 +27,45 @@ export interface ResultRange {
   maxScore: number;
 }
 
+export interface ScoringProfile {
+  id: string;
+  key: string;
+  label: string;
+  color?: string;
+}
+
+export interface ProfileScore {
+  key: string;
+  label: string;
+  color?: string;
+  score: number;
+  percentage: number;
+}
+
+export type RuleOperator =
+  | 'profile_score_above'
+  | 'profile_score_below'
+  | 'profile_pct_above'
+  | 'profile_pct_below'
+  | 'is_highest'
+  | 'total_above'
+  | 'total_below';
+
+export interface RuleCondition {
+  id: string;
+  profile?: string;
+  operator: RuleOperator;
+  threshold?: number;
+}
+
+export interface ResultRule {
+  id: string;
+  blockType: 'result-rule';
+  title?: string;
+  conditions: RuleCondition[];
+  text: string;
+}
+
 export interface SuggestedSurvey {
   id: string;
   title: string;
@@ -36,8 +78,12 @@ export interface Survey {
   title: string;
   description: string;
   slug: string;
+  scoringMode?: ScoringMode;
+  profiles?: ScoringProfile[];
   questions: Question[];
   resultRanges: ResultRange[];
+  defaultResultText?: string;
+  resultRules?: ResultRule[];
   suggestedSurvey?: SuggestedSurvey;
   published: boolean;
   createdAt: string;

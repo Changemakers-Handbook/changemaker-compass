@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
+import { ColorSchemeScript } from '@mantine/core';
 import '@mantine/core/styles.css';
 import { Providers } from './providers';
 import { AppHeader } from './components/AppHeader';
@@ -10,15 +12,21 @@ export const metadata: Metadata = {
   description: 'Find your direction with our surveys',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const colorScheme = (cookieStore.get('mantine-color-scheme')?.value ?? 'light') as 'light' | 'dark';
+
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <ColorSchemeScript />
+      </head>
       <body style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <Providers>
+        <Providers colorScheme={colorScheme}>
           <AppHeader />
           <main style={{ flex: 1 }}>
             {children}

@@ -18,10 +18,11 @@ import {
   Group,
   Card,
   Alert,
+  Progress,
 } from '@mantine/core';
 import Link from 'next/link';
 import type { Survey } from '@/types/survey';
-import { calculateScore, submitSurveyResponse } from '@/app/actions/submit-survey';
+import { calculateScore, submitSurveyResponse, type ScoreResult } from '@/app/actions/submit-survey';
 
 type AnswerValue = string | number;
 
@@ -32,11 +33,7 @@ interface FormValues {
   marketingOptIn: boolean;
 }
 
-interface ResultState {
-  score: number;
-  resultLabel: string;
-  resultDescription: string;
-}
+type ResultState = ScoreResult;
 
 function scaleMarks(min: number, max: number) {
   const range = max - min;
@@ -104,29 +101,74 @@ export function SurveyForm({ survey }: { survey: Survey }) {
   };
 
   if (result) {
+    const isProfile = survey.scoringMode === 'profile' && result.profileScores?.length;
+
     return (
       <Stack gap="xl">
         <Paper withBorder p="xl" radius="md">
-          <Stack gap="md">
-            {survey.resultRanges.length > 0 && (
-              <Group>
-                <Badge size="lg" variant="filled">
-                  Score: {result.score}
-                </Badge>
-              </Group>
-            )}
-            {result.resultLabel && (
-              <Title order={2}>{result.resultLabel}</Title>
-            )}
-            {result.resultDescription ? (
-              <Text>{result.resultDescription}</Text>
+          <Stack gap="lg">
+            {isProfile ? (
+              <>
+                <Title order={2}>Your profile breakdown</Title>
+                <Stack gap="md">
+                  {result.profileScores!.map((ps) => (
+                    <Stack key={ps.key} gap={6}>
+                      <Group justify="space-between">
+                        <Text fw={500}>{ps.label}</Text>
+                        <Badge variant="light" color={ps.color ?? 'blue'}>
+                          {Math.round(ps.percentage)}%
+                        </Badge>
+                      </Group>
+                      <Progress
+                        value={ps.percentage}
+                        color={ps.color ?? 'blue'}
+                        size="lg"
+                        radius="xl"
+                      />
+                    </Stack>
+                  ))}
+                </Stack>
+              </>
             ) : (
-              <Text c="dimmed">
-                Thank you for completing the survey!
-              </Text>
+              <>
+                {survey.resultRanges?.length > 0 && (
+                  <Group>
+                    <Badge size="lg" variant="filled">
+                      Score: {result.score}
+                    </Badge>
+                  </Group>
+                )}
+                {result.resultLabel && (
+                  <Title order={2}>{result.resultLabel}</Title>
+                )}
+                {result.resultDescription ? (
+                  <Text>{result.resultDescription}</Text>
+                ) : (
+                  <Text c="dimmed">Thank you for completing the survey!</Text>
+                )}
+              </>
             )}
           </Stack>
         </Paper>
+
+        {survey.defaultResultText && (
+          <Paper withBorder p="lg" radius="md">
+            <Text>{survey.defaultResultText}</Text>
+          </Paper>
+        )}
+
+        {result.ruleMatches && result.ruleMatches.length > 0 && (
+          <Stack gap="md">
+            {result.ruleMatches.map((match, i) => (
+              <Paper key={i} withBorder p="lg" radius="md">
+                {match.title && (
+                  <Text fw={600} mb={6}>{match.title}</Text>
+                )}
+                <Text>{match.text}</Text>
+              </Paper>
+            ))}
+          </Stack>
+        )}
 
         {survey.suggestedSurvey && (
           <Stack gap="xs">

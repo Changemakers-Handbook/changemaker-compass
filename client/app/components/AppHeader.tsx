@@ -11,8 +11,10 @@ import {
   Menu,
   ActionIcon,
   Divider,
+  useComputedColorScheme,
+  useMantineColorScheme,
 } from '@mantine/core';
-import { IconUser, IconLogin, IconUserPlus } from '@tabler/icons-react';
+import { IconUser, IconLogin, IconUserPlus, IconSun, IconMoon } from '@tabler/icons-react';
 import Link from 'next/link';
 
 const NAV_LINKS = [
@@ -22,6 +24,14 @@ const NAV_LINKS = [
 
 export function AppHeader() {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const { setColorScheme } = useMantineColorScheme();
+  const colorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
+
+  const toggleColorScheme = () => {
+    const next = colorScheme === 'dark' ? 'light' : 'dark';
+    setColorScheme(next);
+    document.cookie = `mantine-color-scheme=${next}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`;
+  };
 
   return (
     <>
@@ -52,22 +62,34 @@ export function AppHeader() {
             Changemaker&apos;s Compass
           </Text>
 
-          <Menu shadow="md" width={200} position="bottom-end">
-            <Menu.Target>
-              <ActionIcon variant="subtle" size="lg" radius="xl" aria-label="Account menu">
-                <IconUser size={20} />
-              </ActionIcon>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <Menu.Label>Account</Menu.Label>
-              <Menu.Item leftSection={<IconLogin size={16} />}>
-                Sign in
-              </Menu.Item>
-              <Menu.Item leftSection={<IconUserPlus size={16} />}>
-                Create account
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
+          <Group gap="xs">
+            <ActionIcon
+              variant="subtle"
+              size="lg"
+              radius="xl"
+              onClick={toggleColorScheme}
+              aria-label="Toggle color scheme"
+            >
+              {colorScheme === 'dark' ? <IconSun size={20} /> : <IconMoon size={20} />}
+            </ActionIcon>
+
+            <Menu shadow="md" width={200} position="bottom-end">
+              <Menu.Target>
+                <ActionIcon variant="subtle" size="lg" radius="xl" aria-label="Account menu">
+                  <IconUser size={20} />
+                </ActionIcon>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Label>Account</Menu.Label>
+                <Menu.Item leftSection={<IconLogin size={16} />}>
+                  Sign in
+                </Menu.Item>
+                <Menu.Item leftSection={<IconUserPlus size={16} />}>
+                  Create account
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+          </Group>
         </Group>
       </header>
 

@@ -21,6 +21,7 @@ import {
   Progress,
 } from '@mantine/core';
 import Link from 'next/link';
+import { MarkdownContent } from '@/app/components/MarkdownContent';
 import type { Survey } from '@/types/survey';
 import { calculateScore, submitSurveyResponse, type ScoreResult } from '@/app/actions/submit-survey';
 
@@ -142,7 +143,7 @@ export function SurveyForm({ survey }: { survey: Survey }) {
                   <Title order={2}>{result.resultLabel}</Title>
                 )}
                 {result.resultDescription ? (
-                  <Text>{result.resultDescription}</Text>
+                  <MarkdownContent>{result.resultDescription}</MarkdownContent>
                 ) : (
                   <Text c="dimmed">Thank you for completing the survey!</Text>
                 )}
@@ -153,7 +154,7 @@ export function SurveyForm({ survey }: { survey: Survey }) {
 
         {survey.defaultResultText && (
           <Paper withBorder p="lg" radius="md">
-            <Text>{survey.defaultResultText}</Text>
+            <MarkdownContent>{survey.defaultResultText}</MarkdownContent>
           </Paper>
         )}
 
@@ -164,7 +165,7 @@ export function SurveyForm({ survey }: { survey: Survey }) {
                 {match.title && (
                   <Text fw={600} mb={6}>{match.title}</Text>
                 )}
-                <Text>{match.text}</Text>
+                <MarkdownContent>{match.text}</MarkdownContent>
               </Paper>
             ))}
           </Stack>

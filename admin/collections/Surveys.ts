@@ -2,6 +2,9 @@ import type { CollectionConfig } from 'payload';
 
 export const Surveys: CollectionConfig = {
   slug: 'surveys',
+  versions: {
+    maxPerDoc: 50,
+  },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'published', 'updatedAt'],
@@ -194,7 +197,7 @@ export const Surveys: CollectionConfig = {
           required: true,
           label: 'Result Description',
           admin: {
-            description: 'Longer explanation shown to the user',
+            description: 'Longer explanation shown to the user. Supports Markdown: **bold**, *italic*, # headings, - bullet lists, [links](url).',
           },
         },
         {
@@ -216,7 +219,7 @@ export const Surveys: CollectionConfig = {
       type: 'textarea',
       label: 'Default Result Text',
       admin: {
-        description: 'This text always appears on the results screen for every respondent, regardless of their score.',
+        description: 'Always shown on the results screen for every respondent. Supports Markdown: **bold**, *italic*, # headings, - bullet lists, [links](url).',
       },
     },
     {
@@ -295,7 +298,7 @@ export const Surveys: CollectionConfig = {
               label: 'Text to display',
               admin: {
                 description:
-                  'This paragraph appears on the results screen when all conditions above are met.',
+                  'Shown on the results screen when all conditions above are met. Supports Markdown: **bold**, *italic*, # headings, - bullet lists, [links](url).',
               },
             },
           ],

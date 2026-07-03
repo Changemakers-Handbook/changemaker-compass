@@ -47,10 +47,11 @@ function evaluateRules(
   const matches: RuleMatch[] = [];
 
   for (const rule of rules) {
-    const allMet = rule.conditions.every((cond) =>
+    const check = rule.conditionOperator === 'or' ? 'some' : 'every';
+    const met = rule.conditions[check]((cond) =>
       evaluateCondition(cond, profileScores, totalScore, dominantKey),
     );
-    if (allMet) matches.push({ title: rule.title ?? undefined, text: rule.text });
+    if (met) matches.push({ title: rule.title ?? undefined, text: rule.text });
   }
 
   return matches;

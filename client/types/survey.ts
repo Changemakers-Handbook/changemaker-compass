@@ -62,6 +62,7 @@ export interface ResultRule {
   id: string;
   blockType: 'result-rule';
   title?: string;
+  conditionOperator?: 'and' | 'or';
   conditions: RuleCondition[];
   text: string;
 }

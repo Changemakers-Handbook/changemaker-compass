@@ -8,16 +8,16 @@ import {
   NavLink,
   Group,
   Text,
-  Menu,
   ActionIcon,
   Divider,
   useComputedColorScheme,
   useMantineColorScheme,
 } from '@mantine/core';
-import { IconUser, IconLogin, IconUserPlus, IconSun, IconMoon } from '@tabler/icons-react';
+import { IconLogin, IconUserPlus, IconSun, IconMoon } from '@tabler/icons-react';
 import Link from 'next/link';
 
 const NAV_LINKS = [
+  { label: 'Home', href: '/' },
   { label: 'Surveys', href: '/surveys' },
   { label: 'About', href: '/about' },
 ];
@@ -62,34 +62,15 @@ export function AppHeader() {
             Changemaker&apos;s Compass
           </Text>
 
-          <Group gap="xs">
-            <ActionIcon
-              variant="subtle"
-              size="lg"
-              radius="xl"
-              onClick={toggleColorScheme}
-              aria-label="Toggle color scheme"
-            >
-              {colorScheme === 'dark' ? <IconSun size={20} /> : <IconMoon size={20} />}
-            </ActionIcon>
-
-            <Menu shadow="md" width={200} position="bottom-end">
-              <Menu.Target>
-                <ActionIcon variant="subtle" size="lg" radius="xl" aria-label="Account menu">
-                  <IconUser size={20} />
-                </ActionIcon>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Label>Account</Menu.Label>
-                <Menu.Item leftSection={<IconLogin size={16} />}>
-                  Sign in
-                </Menu.Item>
-                <Menu.Item leftSection={<IconUserPlus size={16} />}>
-                  Create account
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-          </Group>
+          <ActionIcon
+            variant="subtle"
+            size="lg"
+            radius="xl"
+            onClick={toggleColorScheme}
+            aria-label="Toggle color scheme"
+          >
+            {colorScheme === 'dark' ? <IconSun size={20} /> : <IconMoon size={20} />}
+          </ActionIcon>
         </Group>
       </header>
 
@@ -115,6 +96,15 @@ export function AppHeader() {
               onClick={() => setDrawerOpen(false)}
             />
           ))}
+        </Stack>
+
+        <Divider my="sm" />
+        <Text size="xs" fw={600} c="dimmed" px="sm" mb={4}>
+          Account
+        </Text>
+        <Stack gap={4}>
+          <NavLink leftSection={<IconLogin size={16} />} label="Sign in" />
+          <NavLink leftSection={<IconUserPlus size={16} />} label="Create account" />
         </Stack>
       </Drawer>
     </>

@@ -6,5 +6,8 @@
     "dev:admin": "pnpm --filter admin dev",
     "build:client": "pnpm --filter client build",
     "build:admin": "pnpm --filter admin build"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.4"
   }
 }

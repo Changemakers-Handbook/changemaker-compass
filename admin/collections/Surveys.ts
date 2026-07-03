@@ -244,13 +244,23 @@ export const Surveys: CollectionConfig = {
               },
             },
             {
+              name: 'conditionOperator',
+              type: 'select',
+              defaultValue: 'and',
+              required: true,
+              label: 'Logic',
+              options: [
+                { label: 'All conditions must be true (AND)', value: 'and' },
+                { label: 'Any condition must be true (OR)', value: 'or' },
+              ],
+            },
+            {
               name: 'conditions',
               type: 'array',
-              label: 'Conditions (all must be true)',
+              label: 'Conditions',
               minRows: 1,
               admin: {
-                description:
-                  'Every condition in this list must be met for the text to appear. For OR logic, create a separate rule.',
+                description: 'Conditions evaluated using the Logic setting above.',
               },
               fields: [
                 {

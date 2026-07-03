@@ -5,6 +5,7 @@ import '@mantine/core/styles.css';
 import { Providers } from './providers';
 import { AppHeader } from './components/AppHeader';
 import { AppFooter } from './components/AppFooter';
+import { AnnouncementBanner } from './components/AnnouncementBanner';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -28,6 +29,7 @@ export default async function RootLayout({
       <body style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <Providers colorScheme={colorScheme}>
           <AppHeader />
+          <AnnouncementBanner />
           <main style={{ flex: 1 }}>
             {children}
           </main>

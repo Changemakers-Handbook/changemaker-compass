@@ -1,0 +1,4 @@
+pnpm lint-staged
+pnpm --filter client lint
+pnpm -C client exec tsc --noEmit
+pnpm test

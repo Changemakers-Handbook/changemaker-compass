@@ -5,9 +5,17 @@
     "dev:client": "pnpm --filter client dev",
     "dev:admin": "pnpm --filter admin dev",
     "build:client": "pnpm --filter client build",
-    "build:admin": "pnpm --filter admin build"
+    "build:admin": "pnpm --filter admin build",
+    "test": "pnpm --filter client test",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "**/*.{ts,tsx,js,mjs,json,md}": "prettier --write"
   },
   "devDependencies": {
-    "prettier": "^3.9.4"
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.8",
+    "prettier": "^3.9.4",
+    "vitest": "^4.1.9"
   }
 }

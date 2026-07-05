@@ -23,7 +23,11 @@ import {
 import Link from 'next/link';
 import { MarkdownContent } from '@/app/components/MarkdownContent';
 import type { Survey } from '@/types/survey';
-import { calculateScore, submitSurveyResponse, type ScoreResult } from '@/app/actions/submit-survey';
+import {
+  calculateScore,
+  submitSurveyResponse,
+  type ScoreResult,
+} from '@/app/actions/submit-survey';
 
 type AnswerValue = string | number;
 
@@ -71,6 +75,7 @@ export function SurveyForm({ survey }: { survey: Survey }) {
     formState: { errors },
   } = useForm<FormValues>({ defaultValues });
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const email = watch('email');
   const answerErrors = errors.answers as Record<string, FieldError> | undefined;
 
@@ -139,9 +144,7 @@ export function SurveyForm({ survey }: { survey: Survey }) {
                     </Badge>
                   </Group>
                 )}
-                {result.resultLabel && (
-                  <Title order={2}>{result.resultLabel}</Title>
-                )}
+                {result.resultLabel && <Title order={2}>{result.resultLabel}</Title>}
                 {result.resultDescription ? (
                   <MarkdownContent>{result.resultDescription}</MarkdownContent>
                 ) : (
@@ -163,7 +166,9 @@ export function SurveyForm({ survey }: { survey: Survey }) {
             {result.ruleMatches.map((match, i) => (
               <Paper key={i} withBorder p="lg" radius="md">
                 {match.title && (
-                  <Text fw={600} mb={6}>{match.title}</Text>
+                  <Text fw={600} mb={6}>
+                    {match.title}
+                  </Text>
                 )}
                 <MarkdownContent>{match.text}</MarkdownContent>
               </Paper>
@@ -176,7 +181,10 @@ export function SurveyForm({ survey }: { survey: Survey }) {
             <Text fw={600} size="sm" c="dimmed" tt="uppercase">
               You might also like
             </Text>
-            <Link href={`/surveys/${survey.suggestedSurvey.slug}`} style={{ textDecoration: 'none' }}>
+            <Link
+              href={`/surveys/${survey.suggestedSurvey.slug}`}
+              style={{ textDecoration: 'none' }}
+            >
               <Card withBorder p="lg" radius="md">
                 <Text fw={600}>{survey.suggestedSurvey.title}</Text>
                 {survey.suggestedSurvey.description && (

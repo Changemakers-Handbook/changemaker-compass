@@ -2,16 +2,7 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import {
-  Container,
-  Title,
-  TextInput,
-  Textarea,
-  Button,
-  Stack,
-  Alert,
-  Text,
-} from '@mantine/core';
+import { Container, Title, TextInput, Textarea, Button, Stack, Alert, Text } from '@mantine/core';
 import { IconCircleCheck } from '@tabler/icons-react';
 
 interface ContactFormValues {
@@ -29,7 +20,7 @@ export default function ContactPage() {
     formState: { errors },
   } = useForm<ContactFormValues>();
 
-  const onSubmit = (_data: ContactFormValues) => {
+  const onSubmit = () => {
     setSubmitted(true);
   };
 

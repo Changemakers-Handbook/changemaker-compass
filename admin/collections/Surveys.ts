@@ -26,7 +26,8 @@ export const Surveys: CollectionConfig = {
       unique: true,
       label: 'URL Slug',
       admin: {
-        description: 'The URL path for this survey, e.g. "career-assessment" → /surveys/career-assessment',
+        description:
+          'The URL path for this survey, e.g. "career-assessment" → /surveys/career-assessment',
       },
     },
     {
@@ -42,7 +43,8 @@ export const Surveys: CollectionConfig = {
       type: 'array',
       label: 'Profiles / Dimensions',
       admin: {
-        description: 'Define the dimensions users score towards (e.g. Red, Blue, Yellow). Only used when Scoring Mode is set to "Profile".',
+        description:
+          'Define the dimensions users score towards (e.g. Red, Blue, Yellow). Only used when Scoring Mode is set to "Profile".',
         condition: (data) => data?.scoringMode === 'profile',
       },
       fields: [
@@ -52,7 +54,8 @@ export const Surveys: CollectionConfig = {
           required: true,
           label: 'Profile Key',
           admin: {
-            description: 'Short internal identifier, e.g. "red". Used to link answer choices to this profile.',
+            description:
+              'Short internal identifier, e.g. "red". Used to link answer choices to this profile.',
           },
         },
         {
@@ -93,6 +96,7 @@ export const Surveys: CollectionConfig = {
           label: 'Question Type',
           options: [
             { label: 'Multiple Choice', value: 'multiple_choice' },
+            { label: 'Multi-Select (choose up to N)', value: 'multi_select' },
             { label: 'True / False', value: 'true_false' },
             { label: 'Free Text Answer', value: 'text' },
             { label: 'Number Scale', value: 'scale' },
@@ -104,7 +108,8 @@ export const Surveys: CollectionConfig = {
           label: 'Answer Choices',
           admin: {
             description: 'Add each answer choice and the score it contributes',
-            condition: (_data, siblingData) => siblingData?.type === 'multiple_choice',
+            condition: (_data, siblingData) =>
+              siblingData?.type === 'multiple_choice' || siblingData?.type === 'multi_select',
           },
           fields: [
             {
@@ -119,7 +124,8 @@ export const Surveys: CollectionConfig = {
               required: true,
               label: 'Score Value',
               admin: {
-                description: 'Points this choice contributes (to the total score, or to its profile if Profile scoring is used)',
+                description:
+                  'Points this choice contributes (to the total score, or to its profile if Profile scoring is used)',
               },
             },
             {
@@ -127,11 +133,22 @@ export const Surveys: CollectionConfig = {
               type: 'text',
               label: 'Profile',
               admin: {
-                description: 'Profile key this choice accrues points to, e.g. "red". Must match a key defined in Profiles above.',
+                description:
+                  'Profile key this choice accrues points to, e.g. "red". Must match a key defined in Profiles above.',
                 condition: (data) => data?.scoringMode === 'profile',
               },
             },
           ],
+        },
+        {
+          name: 'maxSelections',
+          type: 'number',
+          defaultValue: 1,
+          label: 'Max Selections',
+          admin: {
+            description: 'Maximum number of options the user may select',
+            condition: (_data, siblingData) => siblingData?.type === 'multi_select',
+          },
         },
         {
           name: 'trueValue',
@@ -178,7 +195,8 @@ export const Surveys: CollectionConfig = {
       type: 'array',
       label: 'Score Result Ranges',
       admin: {
-        description: 'Optional: map a total score range to a label and description shown after submission. Works in both scoring modes.',
+        description:
+          'Optional: map a total score range to a label and description shown after submission. Works in both scoring modes.',
         condition: (data) => data?.scoringMode !== 'profile',
       },
       fields: [
@@ -197,7 +215,8 @@ export const Surveys: CollectionConfig = {
           required: true,
           label: 'Result Description',
           admin: {
-            description: 'Longer explanation shown to the user. Supports Markdown: **bold**, *italic*, # headings, - bullet lists, [links](url).',
+            description:
+              'Longer explanation shown to the user. Supports Markdown: **bold**, *italic*, # headings, - bullet lists, [links](url).',
           },
         },
         {
@@ -219,7 +238,8 @@ export const Surveys: CollectionConfig = {
       type: 'textarea',
       label: 'Default Result Text',
       admin: {
-        description: 'Always shown on the results screen for every respondent. Supports Markdown: **bold**, *italic*, # headings, - bullet lists, [links](url).',
+        description:
+          'Always shown on the results screen for every respondent. Supports Markdown: **bold**, *italic*, # headings, - bullet lists, [links](url).',
       },
     },
     {
@@ -338,7 +358,8 @@ export const Surveys: CollectionConfig = {
       ],
       admin: {
         position: 'sidebar',
-        description: 'Numeric: single total score mapped to a result range. Profile: answers accrue points to named dimensions (e.g. Red / Blue / Yellow) and users see a percentage breakdown.',
+        description:
+          'Numeric: single total score mapped to a result range. Profile: answers accrue points to named dimensions (e.g. Red / Blue / Yellow) and users see a percentage breakdown.',
       },
     },
     {

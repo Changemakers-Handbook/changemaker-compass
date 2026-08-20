@@ -29,7 +29,7 @@ import {
   type ScoreResult,
 } from '@/app/actions/submit-survey';
 
-type AnswerValue = string | number;
+type AnswerValue = string | number | string[];
 
 interface FormValues {
   answers: Record<string, AnswerValue>;
@@ -63,6 +63,7 @@ export function SurveyForm({ survey }: { survey: Survey }) {
     const answers: Record<string, AnswerValue> = {};
     for (const q of survey.questions) {
       if (q.type === 'scale') answers[q.id] = q.scaleMin ?? 1;
+      if (q.type === 'multi_select') answers[q.id] = [];
     }
     return { answers, email: '', receiveResults: true, marketingOptIn: false };
   }, [survey.questions]);
@@ -85,13 +86,13 @@ export function SurveyForm({ survey }: { survey: Survey }) {
     try {
       const scored = await calculateScore(
         survey,
-        data.answers as Record<string, string | number | boolean>,
+        data.answers as Record<string, string | number | boolean | string[]>,
       );
       if (data.email) {
         await submitSurveyResponse({
           surveyId: survey.id,
           email: data.email,
-          answers: data.answers as Record<string, string | number | boolean>,
+          answers: data.answers as Record<string, string | number | boolean | string[]>,
           score: scored.score,
           resultLabel: scored.resultLabel,
           receiveResults: data.receiveResults,
@@ -228,6 +229,51 @@ export function SurveyForm({ survey }: { survey: Survey }) {
                       </Stack>
                     </Radio.Group>
                   )}
+                />
+              )}
+
+              {question.type === 'multi_select' && question.options && (
+                <Controller
+                  name={`answers.${question.id}`}
+                  control={control}
+                  rules={{
+                    validate: (val) => {
+                      const arr = val as string[];
+                      if (!arr || arr.length === 0) return 'Please select at least one answer';
+                      return true;
+                    },
+                  }}
+                  render={({ field }) => {
+                    const selected = (field.value as string[]) ?? [];
+                    const max = question.maxSelections ?? question.options!.length;
+                    const atLimit = selected.length >= max;
+                    return (
+                      <Stack gap="xs" mt="xs">
+                        {max < question.options!.length && (
+                          <Text size="sm" c="dimmed">
+                            Select up to {max} option{max !== 1 ? 's' : ''}
+                          </Text>
+                        )}
+                        {answerErrors?.[question.id] && (
+                          <Text size="sm" c="red">
+                            {answerErrors[question.id].message}
+                          </Text>
+                        )}
+                        <Checkbox.Group value={selected} onChange={field.onChange}>
+                          <Stack gap="xs">
+                            {question.options!.map((opt) => (
+                              <Checkbox
+                                key={opt.id}
+                                value={opt.id}
+                                label={opt.text}
+                                disabled={atLimit && !selected.includes(opt.id)}
+                              />
+                            ))}
+                          </Stack>
+                        </Checkbox.Group>
+                      </Stack>
+                    );
+                  }}
                 />
               )}
 

@@ -83,6 +83,42 @@ describe('numeric scoring', () => {
     expect(result.score).toBe(7);
   });
 
+  it('sums values of all selected multi_select options', async () => {
+    const survey = makeSurvey({
+      questions: [
+        {
+          id: 'q1',
+          text: 'Q1',
+          type: 'multi_select',
+          maxSelections: 2,
+          options: [
+            { id: 'a', text: 'A', value: 3 },
+            { id: 'b', text: 'B', value: 5 },
+            { id: 'c', text: 'C', value: 1 },
+          ],
+        },
+      ],
+    });
+    const result = await calculateScore(survey, { q1: ['a', 'b'] });
+    expect(result.score).toBe(8);
+  });
+
+  it('scores zero for an empty multi_select answer', async () => {
+    const survey = makeSurvey({
+      questions: [
+        {
+          id: 'q1',
+          text: 'Q1',
+          type: 'multi_select',
+          maxSelections: 2,
+          options: [{ id: 'a', text: 'A', value: 5 }],
+        },
+      ],
+    });
+    const result = await calculateScore(survey, { q1: [] });
+    expect(result.score).toBe(0);
+  });
+
   it('skips unanswered questions', async () => {
     const survey = makeSurvey({
       questions: [
@@ -191,6 +227,33 @@ describe('profile scoring', () => {
     const blue = result.profileScores?.find((p) => p.key === 'blue');
     expect(red?.percentage).toBeCloseTo(50);
     expect(blue?.percentage).toBeCloseTo(50);
+  });
+
+  it('accumulates multi_select option values into their respective profiles', async () => {
+    const survey = makeSurvey({
+      scoringMode: 'profile',
+      profiles: [
+        { id: 'p1', key: 'red', label: 'Red' },
+        { id: 'p2', key: 'blue', label: 'Blue' },
+      ],
+      questions: [
+        {
+          id: 'q1',
+          text: 'Q1',
+          type: 'multi_select',
+          maxSelections: 2,
+          options: [
+            { id: 'opt-r', text: 'Red answer', value: 4, profile: 'red' },
+            { id: 'opt-b', text: 'Blue answer', value: 6, profile: 'blue' },
+          ],
+        },
+      ],
+    });
+    const result = await calculateScore(survey, { q1: ['opt-r', 'opt-b'] });
+    const red = result.profileScores?.find((p) => p.key === 'red');
+    const blue = result.profileScores?.find((p) => p.key === 'blue');
+    expect(red?.score).toBe(4);
+    expect(blue?.score).toBe(6);
   });
 
   it('returns zero percentages when no questions are answered', async () => {

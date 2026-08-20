@@ -1,4 +1,4 @@
-export type QuestionType = 'multiple_choice' | 'true_false' | 'text' | 'scale';
+export type QuestionType = 'multiple_choice' | 'true_false' | 'text' | 'scale' | 'multi_select';
 
 export type ScoringMode = 'numeric' | 'profile';
 
@@ -18,6 +18,7 @@ export interface Question {
   falseValue?: number;
   scaleMin?: number;
   scaleMax?: number;
+  maxSelections?: number;
 }
 
 export interface ResultRange {

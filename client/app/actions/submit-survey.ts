@@ -27,14 +27,22 @@ function evaluateCondition(
   const t = cond.threshold ?? 0;
 
   switch (cond.operator) {
-    case 'profile_score_above': return !!ps && ps.score > t;
-    case 'profile_score_below': return !!ps && ps.score < t;
-    case 'profile_pct_above':   return !!ps && ps.percentage > t;
-    case 'profile_pct_below':   return !!ps && ps.percentage < t;
-    case 'is_highest':          return !!cond.profile && cond.profile === dominantKey;
-    case 'total_above':         return totalScore > t;
-    case 'total_below':         return totalScore < t;
-    default: return false;
+    case 'profile_score_above':
+      return !!ps && ps.score > t;
+    case 'profile_score_below':
+      return !!ps && ps.score < t;
+    case 'profile_pct_above':
+      return !!ps && ps.percentage > t;
+    case 'profile_pct_below':
+      return !!ps && ps.percentage < t;
+    case 'is_highest':
+      return !!cond.profile && cond.profile === dominantKey;
+    case 'total_above':
+      return totalScore > t;
+    case 'total_below':
+      return totalScore < t;
+    default:
+      return false;
   }
 }
 
@@ -59,7 +67,7 @@ function evaluateRules(
 
 export async function calculateScore(
   survey: Survey,
-  answers: Record<string, string | number | boolean>,
+  answers: Record<string, string | number | boolean | string[]>,
 ): Promise<ScoreResult> {
   if (survey.scoringMode === 'profile' && survey.profiles?.length) {
     const totals: Record<string, number> = {};
@@ -68,11 +76,19 @@ export async function calculateScore(
     for (const question of survey.questions) {
       const answer = answers[question.id];
       if (answer === undefined || answer === null || answer === '') continue;
+      if (Array.isArray(answer) && answer.length === 0) continue;
 
       if (question.type === 'multiple_choice' && question.options) {
         const option = question.options.find((o) => o.id === answer);
         if (option?.profile && totals[option.profile] !== undefined) {
           totals[option.profile] += option.value ?? 0;
+        }
+      } else if (question.type === 'multi_select' && question.options && Array.isArray(answer)) {
+        for (const selectedId of answer) {
+          const option = question.options.find((o) => o.id === selectedId);
+          if (option?.profile && totals[option.profile] !== undefined) {
+            totals[option.profile] += option.value ?? 0;
+          }
         }
       }
     }
@@ -93,7 +109,13 @@ export async function calculateScore(
       ? evaluateRules(survey.resultRules, profileScores, grandTotal)
       : undefined;
 
-    return { score: grandTotal, resultLabel: '', resultDescription: '', profileScores, ruleMatches };
+    return {
+      score: grandTotal,
+      resultLabel: '',
+      resultDescription: '',
+      profileScores,
+      ruleMatches,
+    };
   }
 
   // Numeric mode
@@ -101,10 +123,16 @@ export async function calculateScore(
   for (const question of survey.questions) {
     const answer = answers[question.id];
     if (answer === undefined || answer === null || answer === '') continue;
+    if (Array.isArray(answer) && answer.length === 0) continue;
 
     if (question.type === 'multiple_choice' && question.options) {
       const option = question.options.find((o) => o.id === answer);
       if (option) score += option.value;
+    } else if (question.type === 'multi_select' && question.options && Array.isArray(answer)) {
+      for (const selectedId of answer) {
+        const option = question.options.find((o) => o.id === selectedId);
+        if (option) score += option.value;
+      }
     } else if (question.type === 'true_false') {
       const isTrue = answer === true || answer === 'true';
       score += isTrue ? (question.trueValue ?? 1) : (question.falseValue ?? 0);
@@ -113,9 +141,7 @@ export async function calculateScore(
     }
   }
 
-  const range = survey.resultRanges?.find(
-    (r) => score >= r.minScore && score <= r.maxScore,
-  );
+  const range = survey.resultRanges?.find((r) => score >= r.minScore && score <= r.maxScore);
 
   const ruleMatches = survey.resultRules?.length
     ? evaluateRules(survey.resultRules, [], score)
@@ -132,7 +158,7 @@ export async function calculateScore(
 export async function submitSurveyResponse(params: {
   surveyId: string;
   email: string;
-  answers: Record<string, string | number | boolean>;
+  answers: Record<string, string | number | boolean | string[]>;
   score: number;
   resultLabel: string;
   receiveResults?: boolean;
